@@ -1,0 +1,61 @@
+#include <Servo.h>
+Servo servoLeft;             //declare left servo
+Servo servoRight;            //declare right servo
+char bluetoothVal;           //value sent over via bluetooth
+char lastValue;              //stores last state of device (on/off)
+
+void setup()
+{
+  Serial.begin(9600); 
+  servoLeft.attach(12);      //attach left servo to pin 13
+  servoRight.attach(13);     //attach right servo to pin 12
+}
+
+void loop()
+{ //begin stationary
+  servoLeft.writeMicroseconds(1500);
+  servoRight.writeMicroseconds(1500);
+  delay (0);
+  if(Serial.available())
+  {//if there is data being recieved
+    bluetoothVal=Serial.read(); //read it
+  }
+  if (bluetoothVal=='F')
+  {//if value from bluetooth serial is f
+    servoLeft.writeMicroseconds(1700);
+    servoRight.writeMicroseconds(1300); 
+    Serial.println("I got the forward command!");
+  }
+  if (bluetoothVal== 'B')
+  {//if the value from bluetooth serial is back
+    servoLeft.writeMicroseconds(1300);
+    servoRight.writeMicroseconds(1700);
+    Serial.println("I got the backward command!");
+  }
+  if (bluetoothVal== 'G')
+  {// if the value from bluetooth serial is left
+    servoLeft.writeMicroseconds(1300);
+    servoRight.writeMicroseconds(1300);
+    Serial.println("Go to the left. Copy that!");
+  }
+  if (bluetoothVal== 'I')
+  {// if the value from bluetooth serial is right
+    servoLeft.writeMicroseconds(1700);
+    servoRight.writeMicroseconds(1700);
+    Serial.println("Go to the right. Copy that!");
+  }
+  if (bluetoothVal=='S')
+  {//if value from bluetooth serial is stop
+    lastValue=bluetoothVal;
+    Serial.println("You told me to stop! Grant detected?");
+  }
+  else if (bluetoothVal=='empty')
+  {//if no value from bluetooth serial
+    servoLeft.writeMicroseconds(1500);
+    servoRight.writeMicroseconds(1500);
+    if (lastValue!='empty')
+      Serial.println("I'm getting no bluetooth readings!");
+    lastValue=bluetoothVal;
+  }
+  delay(1000);
+}
