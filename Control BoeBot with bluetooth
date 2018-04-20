@@ -1,56 +1,68 @@
-#include <Servo.h>
-Servo servoLeft;             //declare left servo
-Servo servoRight;            //declare right servo
-char bluetoothVal;           //value sent over via bluetooth
-char lastValue;              //stores last state of device (on/off)
+/*
+ * Bluetooth Boe Bot 
+ * April 20, 2018
+ * 
+ */
 
-void setup()
-{
+#include <Servo.h>           // Import servo library
+
+Servo servoLeft;             // Assign left servo variable
+Servo servoRight;            // Assign left servo variable
+char bluetoothVal;           // value sent over via bluetooth
+char lastValue;              // stores last state of device (on/off)
+
+void setup() {
   Serial.begin(9600); 
-  servoLeft.attach(12);      //attach left servo to pin 13
-  servoRight.attach(13);     //attach right servo to pin 12
+  servoLeft.attach(12);      // attach left servo to pin 13
+  servoRight.attach(13);     // attach right servo to pin 12
 }
 
-void loop()
-{ //begin stationary
+void loop() {
+ // Start out with robot stationary
   servoLeft.writeMicroseconds(1500);
   servoRight.writeMicroseconds(1500);
-  delay (0);
-  if(Serial.available())
-  {//if there is data being recieved
+  
+  if(Serial.available()) {
+  // If we are getting bluetooth readings...
     bluetoothVal=Serial.read(); //read it
   }
-  if (bluetoothVal=='F')
-  {//if value from bluetooth serial is f
+  
+  if (bluetoothVal=='D') {
+  // If the value received from phone is D, go foward
     servoLeft.writeMicroseconds(1700);
     servoRight.writeMicroseconds(1300); 
     Serial.println("I got the forward command!");
   }
-  if (bluetoothVal== 'B')
-  {//if the value from bluetooth serial is back
+  
+  if (bluetoothVal== 'F') {
+   // If the value received from phone is F, go backward
     servoLeft.writeMicroseconds(1300);
     servoRight.writeMicroseconds(1700);
     Serial.println("I got the backward command!");
   }
-  if (bluetoothVal== 'G')
-  {// if the value from bluetooth serial is left
+  
+  if (bluetoothVal== 'G') {
+   // If the value received from phone is G, go left
     servoLeft.writeMicroseconds(1300);
     servoRight.writeMicroseconds(1300);
     Serial.println("Go to the left. Copy that!");
   }
-  if (bluetoothVal== 'I')
-  {// if the value from bluetooth serial is right
+  
+  if (bluetoothVal== 'H') {
+   // If the value received from phone is H, go Right
     servoLeft.writeMicroseconds(1700);
     servoRight.writeMicroseconds(1700);
     Serial.println("Go to the right. Copy that!");
   }
-  if (bluetoothVal=='S')
-  {//if value from bluetooth serial is stop
+  
+  if (bluetoothVal==I') {
+   // If the value received from phone is I, stop the robot
     lastValue=bluetoothVal;
     Serial.println("You told me to stop! Grant detected?");
   }
-  else if (bluetoothVal=='empty')
-  {//if no value from bluetooth serial
+  
+  else if (bluetoothVal=='empty') {
+   // If no bluetooth readings, stop robot and tell programmer through serial monitor
     servoLeft.writeMicroseconds(1500);
     servoRight.writeMicroseconds(1500);
     if (lastValue!='empty')
